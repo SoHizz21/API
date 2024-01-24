@@ -1,18 +1,27 @@
 from flask import Flask,jsonify
+from pymongo.mongo_client import MongoClient
+
+uri = "mongodb+srv://Peerapat_Sent_work:u1LqjH7nGhbIlnTC@cluster0.aj79tau.mongodb.net/?retryWrites=true&w=majority"
+
+client = MongoClient(uri)
 
 app = Flask(__name__)
-books=[
-    {"id":1,"title":"Book 1","author":"Author 1"},
-    {"id":2,"title":"Book 2","author":"Author 2"},
-    {"id":3,"title":"Book 3","author":"Author 3"}
-]
+
+
+client.admin.command('ping')
+print("Pinged your deployment. You successfully connected to MongoDB!")
+db = client["students"]
+collection = db["std_info"]
+        
 @app.route("/")
 def Greet():
-    return "<p>Welcome to Book Management dsadSystems</p>"
+    return "<p>Welcome to Student Management API</p>" 
 
-@app.route("/books",methods=["GET"])
+@app.route("/students",methods=["GET"])
 def get_all_books():
-    return jsonify({"books":books})
+    data = list(collection.find())
+    return jsonify(data)
+    
 
 @app.route("/books/<int:book_id>",methods=["GET"])
 def get_book(book_id):
@@ -24,3 +33,4 @@ def get_book(book_id):
 
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
+''
