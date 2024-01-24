@@ -37,8 +37,16 @@ def post_students():
     if not id:
         return jsonify({"error":"Cannot create new student"}),500
     collection.insert_one(data)
-    return jsonify(data)
+    return jsonify(data),200
 
+@app.route("/students/<int:std_id>",method=["PUT"])
+def put_students(std_id):
+    data = request.get_json();
+    id = collection.find_one({"_id":str(std_id)})
+    if not id:
+        return jsonify({"error":"Student not found"}),404
+    collection.update_one({"_id": str(std_id)}, {"$set": data})
+    return jsonify(data),200
 
 
 if __name__=="__main__":
