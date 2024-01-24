@@ -12,7 +12,6 @@ app.config['BASIC_AUTH_PASSWORD']='password'
 basic_auth = BasicAuth(app)
 
 client.admin.command('ping')
-print("Pinged your deployment. You successfully connected to MongoDB!")
 db = client["students"]
 collection = db["std_info"]
         
