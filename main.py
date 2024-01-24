@@ -23,13 +23,13 @@ def get_all_books():
     return jsonify(data)
     
 
-@app.route("/books/<int:book_id>",methods=["GET"])
-def get_book(book_id):
-    book=next( (b for b in books if b["id"]==book_id),None)
-    if book:
-        return jsonify(book)
-    else:
-        return jsonify({"error":"Book not found"}),404
+@app.route("/students/<int:std_id>",methods=["GET"])
+def get_students(std_id):
+    id = collection.find_one({"_id":str(std_id)})
+    if not id:
+        return jsonify({"error":"Student not found "}),404
+    return jsonify(id)
+
 
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
