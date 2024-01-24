@@ -1,10 +1,15 @@
 from flask import Flask,jsonify,request
+from flask_basicauth import BasicAuth
 from pymongo.mongo_client import MongoClient
 
 uri = "mongodb+srv://Peerapat_Sent_work:u1LqjH7nGhbIlnTC@cluster0.aj79tau.mongodb.net/?retryWrites=true&w=majority"
 
 client = MongoClient(uri)
 app = Flask(__name__)
+
+app.config['BASIC_AUTH_USERNAME']='username'
+app.config['BASIC_AUTH_PASSWORD']='password'
+basic_auth = BasicAuth(app)
 
 client.admin.command('ping')
 print("Pinged your deployment. You successfully connected to MongoDB!")
@@ -16,12 +21,14 @@ def Greet():
     return "<p>Welcome to Student Management API</p>" 
 
 @app.route("/students",methods=["GET"])
+@basic_auth.required
 def get_all_books():
     data = list(collection.find())
     return jsonify(data)
     
 
 @app.route("/students/<int:std_id>",methods=["GET"])
+@basic_auth.required
 def get_students(std_id):
     id = collection.find_one({"_id":str(std_id)})
     if not id:
@@ -29,6 +36,7 @@ def get_students(std_id):
     return jsonify(id)
 
 @app.route("/students",methods=["POST"])
+@basic_auth.required
 def post_students():
     data = request.get_json();
     id = collection.find_one({"_id":data.get("_id")})
@@ -38,6 +46,7 @@ def post_students():
     return jsonify(data),200
 
 @app.route("/students/<int:std_id>",methods=["PUT"])
+@basic_auth.required
 def put_students(std_id):
     data = request.get_json();
     id = collection.find_one({"_id":str(std_id)})
@@ -47,6 +56,7 @@ def put_students(std_id):
     return jsonify(data),200
 
 @app.route("/students/<int:std_id>",methods=["DELETE"])
+@basic_auth.required
 def delete_students(std_id):
     id = collection.find_one({"_id":str(std_id)})
     if not id:
